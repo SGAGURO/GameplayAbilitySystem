@@ -4,6 +4,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Components/CInteractComponent.h"
+#include "Components/CAttributeComponent.h"
 
 ACPlayer::ACPlayer()
 {
@@ -17,6 +18,7 @@ ACPlayer::ACPlayer()
 	CameraComp->SetupAttachment(SpringArmComp);
 
 	InteractComp = CreateDefaultSubobject<UCInteractComponent>("InteractComp");
+	AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("AttributeComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;

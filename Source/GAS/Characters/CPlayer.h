@@ -8,6 +8,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UCInteractComponent;
 class UAnimMontage;
+class UCAttributeComponent;
 
 UCLASS()
 class GAS_API ACPlayer : public ACharacter
@@ -42,6 +43,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCInteractComponent* InteractComp;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Components")
+	UCAttributeComponent* AttributeComp;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> ProjectileClass;
