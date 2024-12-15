@@ -20,7 +20,7 @@ protected:
 	virtual void BeginPlay() override;
 
 protected:
-	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Components")
 	USphereComponent* SphereComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")

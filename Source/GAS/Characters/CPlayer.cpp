@@ -85,6 +85,7 @@ void ACPlayer::PrimaryAttack_TimeElapsed()
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Instigator = this;
 
 	if (ProjectileClass != nullptr)
 	{
