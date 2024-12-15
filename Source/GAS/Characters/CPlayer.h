@@ -7,6 +7,7 @@
 class USpringArmComponent;
 class UCameraComponent;
 class UCInteractComponent;
+class UAnimMontage;
 
 UCLASS()
 class GAS_API ACPlayer : public ACharacter
@@ -28,6 +29,7 @@ private:
 	void MoveRight(float Value);
 
 	void PrimaryAttack();
+	void PrimaryAttack_TimeElapsed();
 
 	void PrimaryInteract();
 
@@ -38,10 +40,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCameraComponent* CameraComp;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCInteractComponent* InteractComp;
 
-	UPROPERTY(EditAnywhere, Category = "ProjectileClass")
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> ProjectileClass;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UAnimMontage* AttackMontage;
+
+
+	FTimerHandle TimerHandle_PrimaryAttack;
 };

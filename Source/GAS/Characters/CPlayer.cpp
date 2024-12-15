@@ -69,6 +69,16 @@ void ACPlayer::MoveRight(float Value)
 
 void ACPlayer::PrimaryAttack()
 {
+	if (AttackMontage)
+	{
+		PlayAnimMontage(AttackMontage);
+	}
+
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACPlayer::PrimaryAttack_TimeElapsed, 0.2f);
+}
+
+void ACPlayer::PrimaryAttack_TimeElapsed()
+{
 	FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 
 	FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
@@ -77,7 +87,9 @@ void ACPlayer::PrimaryAttack()
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	if (ProjectileClass != nullptr)
+	{
 		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	}
 }
 
 void ACPlayer::PrimaryInteract()
