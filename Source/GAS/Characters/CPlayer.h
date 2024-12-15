@@ -6,6 +6,7 @@
 
 class USpringArmComponent;
 class UCameraComponent;
+class UCInteractComponent;
 
 UCLASS()
 class GAS_API ACPlayer : public ACharacter
@@ -28,12 +29,17 @@ private:
 
 	void PrimaryAttack();
 
+	void PrimaryInteract();
+
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USpringArmComponent* SpringArmComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	UCameraComponent* CameraComp;
+
+	UPROPERTY(VisibleAnywhere)
+	UCInteractComponent* InteractComp;
 
 	UPROPERTY(EditAnywhere, Category = "ProjectileClass")
 	TSubclassOf<AActor> ProjectileClass;

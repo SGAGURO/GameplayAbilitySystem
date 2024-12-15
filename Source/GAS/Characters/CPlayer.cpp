@@ -3,6 +3,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Components/CInteractComponent.h"
 
 ACPlayer::ACPlayer()
 {
@@ -14,6 +15,8 @@ ACPlayer::ACPlayer()
 	
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	CameraComp->SetupAttachment(SpringArmComp);
+
+	InteractComp = CreateDefaultSubobject<UCInteractComponent>("InteractComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
@@ -41,6 +44,7 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ACPlayer::PrimaryAttack);
+	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ACPlayer::PrimaryInteract);
 }
 
 void ACPlayer::MoveForward(float Value)
@@ -74,4 +78,12 @@ void ACPlayer::PrimaryAttack()
 
 	if (ProjectileClass != nullptr)
 		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+}
+
+void ACPlayer::PrimaryInteract()
+{
+	if (InteractComp)
+	{
+		InteractComp->PrimaryInteract();
+	}
 }
