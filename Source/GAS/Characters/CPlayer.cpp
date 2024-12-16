@@ -22,6 +22,8 @@ ACPlayer::ACPlayer()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
+
+	AttackAnimDelay = 0.2f;
 }
 
 void ACPlayer::BeginPlay()
@@ -46,6 +48,9 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ACPlayer::PrimaryAttack);
+	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ACPlayer::SecondaryAttack);
+	PlayerInputComponent->BindAction("ThirdAttack", IE_Pressed, this, &ACPlayer::ThirdAttack);
+
 	PlayerInputComponent->BindAction("PrimaryInteract", IE_Pressed, this, &ACPlayer::PrimaryInteract);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
@@ -78,22 +83,77 @@ void ACPlayer::PrimaryAttack()
 		PlayAnimMontage(AttackMontage);
 	}
 
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACPlayer::PrimaryAttack_TimeElapsed, 0.2f);
+	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACPlayer::PrimaryAttack_TimeElapsed, AttackAnimDelay);
 }
 
 void ACPlayer::PrimaryAttack_TimeElapsed()
 {
-	if (ensure(ProjectileClass))
+	SpawnProjectile(PrimaryProjectileClass);
+}
+
+void ACPlayer::SecondaryAttack()
+{
+	if (AttackMontage)
+	{
+		PlayAnimMontage(AttackMontage);
+	}
+
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ACPlayer::SecondaryAttack_TimeElapsed, AttackAnimDelay);
+}
+
+void ACPlayer::SecondaryAttack_TimeElapsed()
+{
+	SpawnProjectile(SecondaryProjectileClass);
+}
+
+void ACPlayer::ThirdAttack()
+{
+	if (AttackMontage)
+	{
+		PlayAnimMontage(AttackMontage);
+	}
+
+	GetWorldTimerManager().SetTimer(TimerHandle_ThirdAttack, this, &ACPlayer::ThirdAttack_TimeElapsed, AttackAnimDelay);
+}
+
+void ACPlayer::ThirdAttack_TimeElapsed()
+{
+	SpawnProjectile(ThirdProjectileClass);
+}
+
+void ACPlayer::SpawnProjectile(TSubclassOf<AActor> ClassToSpawn)
+{
+	if (ensure(ClassToSpawn))
 	{
 		FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-
-		FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		SpawnParams.Instigator = this;
 
-		GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+		FCollisionShape Shape;
+		Shape.SetSphere(20.0f);
+
+		FCollisionQueryParams Params;
+		Params.AddIgnoredActor(this);
+
+		FCollisionObjectQueryParams ObjParams;
+		ObjParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+		ObjParams.AddObjectTypesToQuery(ECC_WorldStatic);
+		ObjParams.AddObjectTypesToQuery(ECC_Pawn);
+
+		FVector TraceStart = CameraComp->GetComponentLocation();
+		FVector TraceEnd = CameraComp->GetComponentLocation() + (GetControlRotation().Vector() * 5000);
+		FHitResult Hit;
+		if (GetWorld()->SweepSingleByObjectType(Hit, TraceStart, TraceEnd, FQuat::Identity, ObjParams, Shape, Params))
+		{
+			TraceEnd = Hit.ImpactPoint;
+		}
+
+		FRotator ProjRotation = FRotationMatrix::MakeFromX(TraceEnd - HandLocation).Rotator();
+
+		FTransform SpawnTM = FTransform(ProjRotation, HandLocation);
+		GetWorld()->SpawnActor<AActor>(ClassToSpawn, SpawnTM, SpawnParams);
 	}
 }
 

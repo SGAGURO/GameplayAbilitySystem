@@ -32,6 +32,14 @@ private:
 	void PrimaryAttack();
 	void PrimaryAttack_TimeElapsed();
 
+	void SecondaryAttack();
+	void SecondaryAttack_TimeElapsed();
+
+	void ThirdAttack();
+	void ThirdAttack_TimeElapsed();
+
+	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
+
 	void PrimaryInteract();
 
 protected:
@@ -48,11 +56,21 @@ protected:
 	UCAttributeComponent* AttributeComp;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> ProjectileClass;
+	TSubclassOf<AActor> PrimaryProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> SecondaryProjectileClass;
+
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> ThirdProjectileClass;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	float AttackAnimDelay;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
+	FTimerHandle TimerHandle_SecondaryAttack;
+	FTimerHandle TimerHandle_ThirdAttack;
 };
