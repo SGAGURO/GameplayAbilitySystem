@@ -19,7 +19,7 @@ void ACPotion::Interact_Implementation(APawn* InstigatorPawn)
 
 	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{
-		if (AttributeComp->ApplyHealthChange(AttributeComp->GetHealthMax()))
+		if (AttributeComp->ApplyHealthChange(AttributeComp->GetMaxHealth()))
 		{
 			HideAndCooldown();
 		}

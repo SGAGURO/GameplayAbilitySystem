@@ -41,6 +41,7 @@ private:
 	void ThirdAttack();
 	void ThirdAttack_TimeElapsed();
 
+	void StartAttackEffects();
 	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 
 	void PrimaryInteract();
@@ -70,8 +71,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackMontage;
 
+	UPROPERTY(EditAnywhere, Category = "Attack")
+	UParticleSystem* MuzzleEffect;
+
+	UPROPERTY(VisibleAnywhere, Category = "Attack")
+	FName HandSocketName;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Attack")
 	float AttackAnimDelay;
+
+	UPROPERTY(VisibleAnywhere, Category = "Effects")
+	FName TimeToHitParamName;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;

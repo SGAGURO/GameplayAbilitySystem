@@ -35,7 +35,7 @@ bool UCAttributeComponent::IsFullHealth() const
 	return Health == MaxHealth;
 }
 
-float UCAttributeComponent::GetHealthMax() const
+float UCAttributeComponent::GetMaxHealth() const
 {
 	return MaxHealth;
 }

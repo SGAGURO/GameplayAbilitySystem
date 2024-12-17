@@ -28,7 +28,7 @@ public:
 	bool IsFullHealth() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
-	float GetHealthMax() const;
+	float GetMaxHealth() const;
 
 public:
 	UPROPERTY(BlueprintAssignable)
