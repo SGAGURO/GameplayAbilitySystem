@@ -2,7 +2,8 @@
 
 UCAttributeComponent::UCAttributeComponent()
 {
-	Health = 100.f;
+	MaxHealth = 100.f;
+	Health = MaxHealth;
 }
 
 
@@ -14,14 +15,27 @@ void UCAttributeComponent::BeginPlay()
 
 bool UCAttributeComponent::ApplyHealthChange(float Delta)
 {
-	Health += Delta;
+	float OldHealth = Health;
 
-	OnHealthChanged.Broadcast(nullptr, this, Health, Delta);
+	Health = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
 
-	return true;
+	float ActualDelta = Health - OldHealth;
+	OnHealthChanged.Broadcast(nullptr, this, Health, ActualDelta);
+
+	return ActualDelta != 0;
 }
 
 bool UCAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;
+}
+
+bool UCAttributeComponent::IsFullHealth() const
+{
+	return Health == MaxHealth;
+}
+
+float UCAttributeComponent::GetHealthMax() const
+{
+	return MaxHealth;
 }
