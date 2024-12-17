@@ -4,6 +4,8 @@
 #include "GameFramework/Character.h"
 #include "CBot.generated.h"
 
+class UPawnSensingComponent;
+
 UCLASS()
 class GAS_API ACBot : public ACharacter
 {
@@ -13,9 +15,12 @@ public:
 	ACBot();
 
 protected:
-	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
-public:	
-	virtual void Tick(float DeltaTime) override;
+	UFUNCTION()
+	void OnPawnSeen(APawn* Pawn);
 
+protected:
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	UPawnSensingComponent* PawnSensingComp;
 };

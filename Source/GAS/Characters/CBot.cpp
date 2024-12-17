@@ -1,19 +1,31 @@
 #include "CBot.h"
+#include "Perception/PawnSensingComponent.h"
+#include "AIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "DrawDebugHelpers.h"
 
 ACBot::ACBot()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	PawnSensingComp = CreateDefaultSubobject<UPawnSensingComponent>("PawnSensingComp");
 }
 
-void ACBot::BeginPlay()
+void ACBot::PostInitializeComponents()
 {
-	Super::BeginPlay();
-	
+	Super::PostInitializeComponents();
+
+	PawnSensingComp->OnSeePawn.AddDynamic(this, &ACBot::OnPawnSeen);
 }
 
-void ACBot::Tick(float DeltaTime)
+void ACBot::OnPawnSeen(APawn* Pawn)
 {
-	Super::Tick(DeltaTime);
+	AAIController* AIC = Cast<AAIController>(GetController());
+	if (AIC)
+	{
+		UBlackboardComponent* BBComp = AIC->GetBlackboardComponent();
+		BBComp->SetValueAsObject("TargetActor", Pawn);
 
+		DrawDebugString(GetWorld(), GetActorLocation(), "I Found You!", nullptr, FColor::Red, 1.0f, true);
+	}
 }
