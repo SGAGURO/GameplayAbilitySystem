@@ -1,5 +1,9 @@
 #include "CGameMode.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "EngineUtils.h"
+#include "DrawDebugHelpers.h"
+#include "Characters/CBot.h"
+#include "Components/CAttributeComponent.h"
 
 ACGameMode::ACGameMode()
 {
@@ -15,6 +19,42 @@ void ACGameMode::StartPlay()
 
 void ACGameMode::SpawnBotTimerElapsed()
 {
+	int32 NrOfAliveBots = 0;
+	for (TActorIterator<ACBot> It(GetWorld()); It; ++It)
+	{
+		ACBot* Bot = *It;
+
+		UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(Bot->GetComponentByClass(UCAttributeComponent::StaticClass()));
+		if (ensure(AttributeComp) && AttributeComp->IsAlive())
+		{
+			NrOfAliveBots++;
+		}
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Found %i alive bots."), NrOfAliveBots);
+
+	float MaxBotCount = 10.0f;
+
+	//Solution #1. quick return to end the func when reached 10 bots
+	/*
+	if ((int32)NrOfAliveBots >= MaxBotCount)
+	{
+		return;
+	}
+	*/
+
+	//Solution #2. Max bot count is limited by the current `y` value read from the Curve Asset.
+	if (DifficultyCurve)
+	{
+		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
+	}
+
+	if ((int32)NrOfAliveBots >= MaxBotCount)
+	{
+		UE_LOG(LogTemp, Log, TEXT("At maximum bot capacity. Skipping bot spawn."));
+		return;
+	}
+
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
 	if (ensure(QueryInstance))
 	{
@@ -31,8 +71,10 @@ void ACGameMode::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstan
 	}
 
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
-	if (Locations.IsValidIndex(0)) //Locations.Num() > 0
+	if (Locations.IsValidIndex(0))
 	{
 		GetWorld()->SpawnActor<AActor>(BotClass, Locations[0], FRotator::ZeroRotator);
+		
+		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
 	}
 }

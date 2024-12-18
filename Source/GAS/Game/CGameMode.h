@@ -5,6 +5,9 @@
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "CGameMode.generated.h"
 
+class UEnvQuery;
+class UCurveFloat;
+
 UCLASS()
 class GAS_API ACGameMode : public AGameModeBase
 {
@@ -34,4 +37,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TSubclassOf<AActor> BotClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	UCurveFloat* DifficultyCurve;
 };
