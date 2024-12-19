@@ -14,8 +14,9 @@ class GAS_API UCAttributeComponent : public UActorComponent
 public:	
 	UCAttributeComponent();
 
-protected:
-	virtual void BeginPlay() override;
+public:
+	UFUNCTION(BlueprintCallable, Category = "Attributes")
+	static UCAttributeComponent* GetAttributes(AActor* FromActor);
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Attributes")

@@ -7,10 +7,14 @@ UCAttributeComponent::UCAttributeComponent()
 }
 
 
-void UCAttributeComponent::BeginPlay()
+UCAttributeComponent* UCAttributeComponent::GetAttributes(AActor* FromActor)
 {
-	Super::BeginPlay();
+	if (FromActor)
+	{
+		return Cast<UCAttributeComponent>(FromActor->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	}
 
+	return nullptr;
 }
 
 bool UCAttributeComponent::ApplyHealthChange(float Delta)

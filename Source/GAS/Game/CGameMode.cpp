@@ -24,7 +24,7 @@ void ACGameMode::SpawnBotTimerElapsed()
 	{
 		ACBot* Bot = *It;
 
-		UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(Bot->GetComponentByClass(UCAttributeComponent::StaticClass()));
+		UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributes(Bot);;
 		if (ensure(AttributeComp) && AttributeComp->IsAlive())
 		{
 			NrOfAliveBots++;
@@ -34,16 +34,7 @@ void ACGameMode::SpawnBotTimerElapsed()
 	UE_LOG(LogTemp, Log, TEXT("Found %i alive bots."), NrOfAliveBots);
 
 	float MaxBotCount = 10.0f;
-
-	//Solution #1. quick return to end the func when reached 10 bots
-	/*
-	if ((int32)NrOfAliveBots >= MaxBotCount)
-	{
-		return;
-	}
-	*/
-
-	//Solution #2. Max bot count is limited by the current `y` value read from the Curve Asset.
+	
 	if (DifficultyCurve)
 	{
 		MaxBotCount = DifficultyCurve->GetFloatValue(GetWorld()->TimeSeconds);
