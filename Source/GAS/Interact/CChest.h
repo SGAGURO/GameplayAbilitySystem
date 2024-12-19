@@ -13,9 +13,6 @@ class GAS_API ACChest : public AActor, public ICGameplayInterface
 public:	
 	ACChest();
 
-protected:
-	virtual void BeginPlay() override;
-
 public:
 	void Interact_Implementation(APawn* InstigatorPawn) override;
 

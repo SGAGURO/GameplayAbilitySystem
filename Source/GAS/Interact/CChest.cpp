@@ -11,12 +11,6 @@ ACChest::ACChest()
 	TargetPitch = 110;
 }
 
-void ACChest::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
 void ACChest::Interact_Implementation(APawn* InstigatorPawn)
 {
 	TopMesh->SetRelativeRotation(FRotator(TargetPitch, 0, 0));
