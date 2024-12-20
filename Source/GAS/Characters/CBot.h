@@ -6,6 +6,7 @@
 
 class UPawnSensingComponent;
 class UCAttributeComponent;
+class UCWorldWidget;
 
 UCLASS()
 class GAS_API ACBot : public ACharacter
@@ -35,4 +36,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeToHitParamName;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+
+	UCWorldWidget* ActiveHealthBar;
 };
