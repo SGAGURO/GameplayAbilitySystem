@@ -15,7 +15,7 @@ void ACPotion::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 
-	UCAttributeComponent* AttributeComp = Cast<UCAttributeComponent>(InstigatorPawn->GetComponentByClass(UCAttributeComponent::StaticClass()));
+	UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributes(InstigatorPawn);
 
 	if (ensure(AttributeComp) && !AttributeComp->IsFullHealth())
 	{
