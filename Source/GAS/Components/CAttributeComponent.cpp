@@ -1,6 +1,8 @@
 #include "CAttributeComponent.h"
 #include "Game/CGameMode.h"
 
+static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("SGA.DamageMultiplier"), 1.0f, TEXT("Damage Modifier for Attribute Component."), ECVF_Cheat);
+
 UCAttributeComponent::UCAttributeComponent()
 {
 	MaxHealth = 100.f;
@@ -36,9 +38,16 @@ bool UCAttributeComponent::Kill(AActor* InstigatorActor)
 
 bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
-	if (!GetOwner()->CanBeDamaged())
+	if (!GetOwner()->CanBeDamaged() && Delta < 0.0f)
 	{
 		return false;
+	}
+
+	if (Delta < 0.0f)
+	{
+		float DamageMultiplier = CVarDamageMultiplier.GetValueOnGameThread();
+
+		Delta *= DamageMultiplier;
 	}
 
 	float OldHealth = Health;

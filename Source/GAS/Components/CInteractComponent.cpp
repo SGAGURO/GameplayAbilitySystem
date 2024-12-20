@@ -2,6 +2,8 @@
 #include "DrawDebugHelpers.h"
 #include "Interfaces/CGameplayInterface.h"
 
+static TAutoConsoleVariable<bool> CVarDebugDrawInteraction(TEXT("SGA.InteractionDebugDraw"), false, TEXT("Enable Debug Lines for Interact Component."), ECVF_Cheat);
+
 UCInteractComponent::UCInteractComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -22,6 +24,8 @@ void UCInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 void UCInteractComponent::PrimaryInteract()
 {
+	bool bDebugDraw = CVarDebugDrawInteraction.GetValueOnGameThread();
+
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 
@@ -32,14 +36,6 @@ void UCInteractComponent::PrimaryInteract()
 	MyOwner->GetActorEyesViewPoint(EyeLocation, EyeRotation);
 
 	FVector End = EyeLocation + (EyeRotation.Vector() * 1000);
-
-	//(Not use LineTrace! because it's too thin to hit.)
-	/*
-	FHitResult Hit;
-	bool bBlockingHit = GetWorld()->LineTraceSingleByObjectType(Hit, EyeLocation, End, ObjectQueryParams);
-	FColor LineColor = bBlockingHit ? FColor::Green : FColor::Red;
-	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
-	*/
 
 	//SweepTrace
 	TArray<FHitResult> Hits;
@@ -54,7 +50,10 @@ void UCInteractComponent::PrimaryInteract()
 
 	for (FHitResult Hit : Hits)
 	{
-		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
+		if (bDebugDraw)
+		{
+			DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
+		}
 
 		AActor* HitActor = Hit.GetActor();
 		if (HitActor)
@@ -69,5 +68,8 @@ void UCInteractComponent::PrimaryInteract()
 		}
 	}
 
-	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
+	if (bDebugDraw)
+	{
+		DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
+	}
 }
