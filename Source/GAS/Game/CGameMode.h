@@ -19,6 +19,9 @@ public:
 protected:
 	virtual void StartPlay() override;
 
+	UFUNCTION(Exec)
+	void KillEmAll();
+
 	//Spawn Bots
 protected:
 	FTimerHandle TimerHandle_SpawnBots;

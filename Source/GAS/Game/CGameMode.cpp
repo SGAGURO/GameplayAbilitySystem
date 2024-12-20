@@ -17,6 +17,20 @@ void ACGameMode::StartPlay()
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ACGameMode::SpawnBotTimerElapsed, SpawnTimerInterval, true);
 }
 
+void ACGameMode::KillEmAll()
+{
+	for (TActorIterator<ACBot> It(GetWorld()); It; ++It)
+	{
+		ACBot* Bot = *It;
+
+		UCAttributeComponent* AttributeComp = UCAttributeComponent::GetAttributes(Bot);
+		if (ensure(AttributeComp) && AttributeComp->IsAlive())
+		{
+			AttributeComp->Kill(this);
+		}
+	}
+}
+
 void ACGameMode::SpawnBotTimerElapsed()
 {
 	int32 NrOfAliveBots = 0;

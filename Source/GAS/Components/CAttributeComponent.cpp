@@ -28,8 +28,18 @@ bool UCAttributeComponent::IsActorAlive(AActor* Actor)
 	return false;
 }
 
+bool UCAttributeComponent::Kill(AActor* InstigatorActor)
+{
+	return ApplyHealthChange(InstigatorActor, -GetMaxHealth());
+}
+
 bool UCAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
+	if (!GetOwner()->CanBeDamaged())
+	{
+		return false;
+	}
+
 	float OldHealth = Health;
 
 	Health = FMath::Clamp(Health + Delta, 0.0f, MaxHealth);
