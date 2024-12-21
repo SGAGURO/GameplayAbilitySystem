@@ -41,8 +41,6 @@ private:
 	void SprintStop();
 
 	void PrimaryAttack();
-	void PrimaryAttack_TimeElapsed();
-
 	void SecondaryAttack();
 	void SecondaryAttack_TimeElapsed();
 

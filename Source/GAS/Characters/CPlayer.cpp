@@ -100,14 +100,7 @@ void ACPlayer::SprintStop()
 
 void ACPlayer::PrimaryAttack()
 {
-	StartAttackEffects();
-
-	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ACPlayer::PrimaryAttack_TimeElapsed, AttackAnimDelay);
-}
-
-void ACPlayer::PrimaryAttack_TimeElapsed()
-{
-	SpawnProjectile(PrimaryProjectileClass);
+	ActionComp->StartActionByName(this, "PrimaryAttack");
 }
 
 void ACPlayer::SecondaryAttack()

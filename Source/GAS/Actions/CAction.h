@@ -17,6 +17,9 @@ public:
 	//some action requires a stop event, such as when a key is "released" or after "time has elapsed".
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StopAction(AActor* Instigator);
+
+	//This class, which inherits from UObject, may not support GetWorld.
+	UWorld* GetWorld() const override;
 	
 public:
 	//it's a key, used to identify a specific action
