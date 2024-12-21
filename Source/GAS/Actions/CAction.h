@@ -27,7 +27,7 @@ public:
 	void StartAction(AActor* Instigator);
 
 	//some action requires a stop event, such as when a key is "released" or after "time has elapsed".
-	UFUNCTION(BlueprintNativeEvent, Category = "Action")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Action")
 	void StopAction(AActor* Instigator);
 
 	//This class, which inherits from UObject, may not support GetWorld.

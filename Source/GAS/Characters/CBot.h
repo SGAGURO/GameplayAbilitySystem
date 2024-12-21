@@ -7,6 +7,7 @@
 class UPawnSensingComponent;
 class UCAttributeComponent;
 class UCWorldWidget;
+class UCActionComponent;
 
 UCLASS()
 class GAS_API ACBot : public ACharacter
@@ -33,6 +34,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	UCAttributeComponent* AttributeComp;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	UCActionComponent* ActionComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeToHitParamName;
