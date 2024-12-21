@@ -9,6 +9,7 @@ class UCameraComponent;
 class UCInteractComponent;
 class UAnimMontage;
 class UCAttributeComponent;
+class UCActionComponent;
 
 UCLASS()
 class GAS_API ACPlayer : public ACharacter
@@ -36,6 +37,9 @@ private:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
+	void SprintStart();
+	void SprintStop();
+
 	void PrimaryAttack();
 	void PrimaryAttack_TimeElapsed();
 
@@ -62,6 +66,9 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Components")
 	UCAttributeComponent* AttributeComp;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Components")
+	UCActionComponent* ActionComp;
 
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> PrimaryProjectileClass;

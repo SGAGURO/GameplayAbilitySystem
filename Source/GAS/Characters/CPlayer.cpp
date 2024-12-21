@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CInteractComponent.h"
 #include "Components/CAttributeComponent.h"
+#include "Components/CActionComponent.h"
 
 ACPlayer::ACPlayer()
 {
@@ -20,6 +21,7 @@ ACPlayer::ACPlayer()
 
 	InteractComp = CreateDefaultSubobject<UCInteractComponent>("InteractComp");
 	AttributeComp = CreateDefaultSubobject<UCAttributeComponent>("AttributeComp");
+	ActionComp = CreateDefaultSubobject<UCActionComponent>("ActionComp");
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	bUseControllerRotationYaw = false;
@@ -44,6 +46,8 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveRight", this, &ACPlayer::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &ACPlayer::SprintStart);
+	PlayerInputComponent->BindAction("Sprint", IE_Released, this, &ACPlayer::SprintStop);
 
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ACPlayer::PrimaryAttack);
 	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ACPlayer::SecondaryAttack);
@@ -82,6 +86,16 @@ void ACPlayer::MoveRight(float Value)
 	FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
 	
 	AddMovementInput(RightVector, Value);
+}
+
+void ACPlayer::SprintStart()
+{
+	ActionComp->StartActionByName(this, "Sprint");
+}
+
+void ACPlayer::SprintStop()
+{
+	ActionComp->StopActionByName(this, "Sprint");
 }
 
 void ACPlayer::PrimaryAttack()
