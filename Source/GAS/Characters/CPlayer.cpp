@@ -54,6 +54,11 @@ void ACPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 }
 
+FVector ACPlayer::GetPawnViewLocation() const
+{
+	return CameraComp->GetComponentLocation();
+}
+
 void ACPlayer::HealSelf(float Amount)
 {
 	AttributeComp->ApplyHealthChange(this, Amount);
