@@ -2,20 +2,21 @@
 
 #include "CoreMinimal.h"
 #include "Interact/CPickUpBase.h"
-#include "CPotion.generated.h"
+#include "CCredit.generated.h"
 
 UCLASS()
-class GAS_API ACPotion : public ACPickUpBase
+class GAS_API ACCredit : public ACPickUpBase
 {
 	GENERATED_BODY()
-
-public:
-	ACPotion();
 	
+public:
+	ACCredit();
+
 public:
 	void Interact_Implementation(APawn* InstigatorPawn) override;
 
 protected:
-	UPROPERTY(EditAnywhere, Category = "HealthPotion")
-	int32 CreditCost;
+	UPROPERTY(EditAnywhere, Category = "Credits")
+	int32 CreditsAmount;
+
 };

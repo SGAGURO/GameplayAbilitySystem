@@ -8,6 +8,10 @@ ACPickUpBase::ACPickUpBase()
 	SphereComp->SetCollisionProfileName("PickUp");
 	RootComponent = SphereComp;
 
+	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
+	MeshComp->SetupAttachment(RootComponent);
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
 	RespawnTime = 10.0f;
 }
 

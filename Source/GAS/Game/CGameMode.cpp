@@ -5,12 +5,16 @@
 #include "Characters/CBot.h"
 #include "Characters/CPlayer.h"
 #include "Components/CAttributeComponent.h"
+#include "CPlayerState.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SGA.SpawnBots"), true, TEXT("Enable spawning of bots"), ECVF_Cheat);
 
 ACGameMode::ACGameMode()
 {
 	SpawnTimerInterval = 2.f;
+	CreditsPerKill = 20;
+
+	PlayerStateClass = ACPlayerState::StaticClass();
 }
 
 void ACGameMode::StartPlay()
@@ -45,6 +49,16 @@ void ACGameMode::OnActorKilled(AActor* VictimActor, AActor* Killer)
 
 		float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+	}
+
+	APawn* KillerPawn = Cast<APawn>(Killer);
+	if (KillerPawn)
+	{
+		ACPlayerState* PS = KillerPawn->GetPlayerState<ACPlayerState>();
+		if (PS)
+		{
+			PS->AddCredits(CreditsPerKill);
+		}
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("OnActorKilled: Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(Killer));
