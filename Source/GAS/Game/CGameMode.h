@@ -43,7 +43,7 @@ protected:
 	UEnvQuery* SpawnBotQuery;
 
 	UFUNCTION()
-	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+	void OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	TSubclassOf<AActor> BotClass;
@@ -54,4 +54,20 @@ protected:
 	//Credit
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
 	int32 CreditsPerKill;
+
+	//Spawn PickUp
+	UPROPERTY(EditDefaultsOnly, Category = "PickUP")
+	UEnvQuery* SpawnPickUpQuery;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PickUP")
+	TArray<TSubclassOf<AActor>> PickUpClasses;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PickUP")
+	float RequiredPickUpDistance;
+
+	UPROPERTY(EditDefaultsOnly, Category = "PickUP")
+	int32 DesiredPickUpCount;
+
+	UFUNCTION()
+	void OnSpawnPickUpQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 };

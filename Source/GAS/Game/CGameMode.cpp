@@ -14,6 +14,9 @@ ACGameMode::ACGameMode()
 	SpawnTimerInterval = 2.f;
 	CreditsPerKill = 20;
 
+	DesiredPickUpCount = 10;
+	RequiredPickUpDistance = 2000;
+
 	PlayerStateClass = ACPlayerState::StaticClass();
 }
 
@@ -22,6 +25,15 @@ void ACGameMode::StartPlay()
 	Super::StartPlay();
 
 	GetWorldTimerManager().SetTimer(TimerHandle_SpawnBots, this, &ACGameMode::SpawnBotTimerElapsed, SpawnTimerInterval, true);
+
+	if (ensure(PickUpClasses.Num() > 0))
+	{
+		UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnPickUpQuery, this, EEnvQueryRunMode::AllMatching, nullptr);
+		if (ensure(QueryInstance))
+		{
+			QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameMode::OnSpawnPickUpQueryCompleted);
+		}
+	}
 }
 
 void ACGameMode::KillEmAll()
@@ -112,11 +124,11 @@ void ACGameMode::SpawnBotTimerElapsed()
 	UEnvQueryInstanceBlueprintWrapper* QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
 	if (ensure(QueryInstance))
 	{
-		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameMode::OnQueryCompleted);
+		QueryInstance->GetOnQueryFinishedEvent().AddDynamic(this, &ACGameMode::OnSpawnBotQueryCompleted);
 	}
 }
 
-void ACGameMode::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+void ACGameMode::OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
 {
 	if (QueryStatus != EEnvQueryStatus::Success)
 	{
@@ -130,5 +142,68 @@ void ACGameMode::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstan
 		GetWorld()->SpawnActor<AActor>(BotClass, Locations[0], FRotator::ZeroRotator);
 		
 		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+	}
+}
+
+void ACGameMode::OnSpawnPickUpQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus)
+{
+	//Check query failed
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Spawn PickUp EQS Query Failed!"));
+		return;
+	}
+
+	//Get all Matched item locations
+	TArray<FVector> EQSLocations = QueryInstance->GetResultsAsLocations();
+
+	//Already spawend locations
+	TArray<FVector> UsedLocations;
+
+	//Iterator for while
+	int32 SpawnCounter = 0;
+
+	//Iterator reached end or not enough item count
+	while (SpawnCounter < DesiredPickUpCount && EQSLocations.Num() > 0)
+	{
+		//Get a random item location
+		int32 RandomLocationIndex = FMath::RandRange(0, EQSLocations.Num() - 1);
+		FVector PickedLocation = EQSLocations[RandomLocationIndex];
+
+		//Remove for next iterator
+		EQSLocations.RemoveAt(RandomLocationIndex);
+
+		//Check distance
+		bool bValidLocation = true;
+		for (FVector OtherLocation : UsedLocations)
+		{
+			float DistanceTo = (PickedLocation - OtherLocation).Size();
+
+			//Too close
+			if (DistanceTo < RequiredPickUpDistance)
+			{
+				DrawDebugSphere(GetWorld(), PickedLocation, 50.0f, 20, FColor::Red, false, 10.0f);
+
+				bValidLocation = false;
+				break;
+			}
+		}
+
+		//Skip to next iterator because too close
+		if (!bValidLocation)
+		{
+			continue;
+		}
+
+		//Get random ClassRef to spawn
+		int32 RandomClassIndex = FMath::RandRange(0, PickUpClasses.Num() - 1);
+		TSubclassOf<AActor> RandomPowerupClass = PickUpClasses[RandomClassIndex];
+
+		//Actullay spawn
+		GetWorld()->SpawnActor<AActor>(RandomPowerupClass, PickedLocation, FRotator::ZeroRotator);
+
+		//marking for `already spawend` locations
+		UsedLocations.Add(PickedLocation);
+		SpawnCounter++;
 	}
 }
