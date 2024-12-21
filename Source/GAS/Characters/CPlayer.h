@@ -42,13 +42,7 @@ private:
 
 	void PrimaryAttack();
 	void SecondaryAttack();
-	void SecondaryAttack_TimeElapsed();
-
 	void ThirdAttack();
-	void ThirdAttack_TimeElapsed();
-
-	void StartAttackEffects();
-	void SpawnProjectile(TSubclassOf<AActor> ClassToSpawn);
 
 	void PrimaryInteract();
 
@@ -68,31 +62,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Components")
 	UCActionComponent* ActionComp;
 
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> PrimaryProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> SecondaryProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> ThirdProjectileClass;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackMontage;
-
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UParticleSystem* MuzzleEffect;
-
-	UPROPERTY(VisibleAnywhere, Category = "Attack")
-	FName HandSocketName;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack")
-	float AttackAnimDelay;
-
 	UPROPERTY(VisibleAnywhere, Category = "Effects")
 	FName TimeToHitParamName;
-
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
-	FTimerHandle TimerHandle_ThirdAttack;
 };
