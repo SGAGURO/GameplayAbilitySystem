@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "GameplayTagContainer.h"
 #include "CActionComponent.generated.h"
 
 class UCAction;
@@ -32,6 +33,10 @@ public:
 	//When stopping 'Action', it is searched using `ActionName`
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
+
+	//Replaces the 'state'. it's mean currently activating states
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
+	FGameplayTagContainer ActiveGameplayTags;
 
 protected:
 	//A list of actions that are owned by default.
