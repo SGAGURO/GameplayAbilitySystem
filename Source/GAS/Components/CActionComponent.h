@@ -24,7 +24,11 @@ public:
 public:
 	//ClassRef parameter to load the 'Action' into memory.
 	UFUNCTION(BlueprintCallable, Category = "Actions")
-	void AddAction(TSubclassOf<UCAction> ActionClass);
+	void AddAction(AActor* Instigator, TSubclassOf<UCAction> ActionClass);
+
+	//it's not just removing a tag, beyond send to GBC.
+	UFUNCTION(BlueprintCallable, Category = "Actions")
+	void RemoveAction(UCAction* ActionToRemove);
 
 	//When starting 'Action', it is searched using `ActionName`
 	UFUNCTION(BlueprintCallable, Category = "Actions")

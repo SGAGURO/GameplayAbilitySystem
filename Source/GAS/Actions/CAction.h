@@ -54,4 +54,8 @@ public:
 	//it's a key, used to identify a specific action
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
+
+	//A specific Action must become a `StartAction` immediately after `AddAction`.
+	UPROPERTY(EditDefaultsOnly, Category = "Action")
+	bool bAutoStart;
 };

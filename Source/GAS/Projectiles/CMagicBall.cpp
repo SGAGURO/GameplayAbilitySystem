@@ -4,6 +4,7 @@
 #include "Components/CAttributeComponent.h"
 #include "Components/CActionComponent.h"
 #include "Game/CGameplayFunctionLibrary.h"
+#include "Actions/CActionEffect.h"
 
 ACMagicBall::ACMagicBall()
 {
@@ -34,6 +35,11 @@ void ACMagicBall::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		if (UCGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult))
 		{
 			Explode();
+
+			if (BurningActionClass && OtherActionComp)
+			{
+				OtherActionComp->AddAction(GetInstigator(), BurningActionClass);
+			}
 		}
 	}
 }
