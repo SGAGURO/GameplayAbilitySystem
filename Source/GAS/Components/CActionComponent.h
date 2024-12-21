@@ -34,6 +34,10 @@ public:
 	bool StopActionByName(AActor* Instigator, FName ActionName);
 
 protected:
+	//A list of actions that are owned by default.
+	UPROPERTY(EditAnywhere, Category = "Actions")
+	TArray<TSubclassOf<UCAction>> DefaultActions;
+
 	//A list that ObjectRef of Actions created using the `AddAction` method.
 	UPROPERTY()
 	TArray<UCAction*> Actions;
