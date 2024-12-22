@@ -24,7 +24,11 @@ void UCInteractComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	FindNearestInteractable();
+	APawn* MyPawn = Cast<APawn>(GetOwner());
+	if (MyPawn->IsLocallyControlled())
+	{
+		FindNearestInteractable();
+	}
 }
 
 void UCInteractComponent::FindNearestInteractable()
