@@ -30,6 +30,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	void RemoveAction(UCAction* ActionToRemove);
 
+	//Find a specific action via ClassRef
+	UFUNCTION(BlueprintCallable, Category = "Actions")
+	UCAction* GetAction(TSubclassOf<UCAction> ActionClass) const;
+
 	//When starting 'Action', it is searched using `ActionName`
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StartActionByName(AActor* Instigator, FName ActionName);

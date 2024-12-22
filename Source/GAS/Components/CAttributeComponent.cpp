@@ -9,6 +9,9 @@ UCAttributeComponent::UCAttributeComponent()
 	MaxHealth = 100.f;
 	Health = MaxHealth;
 
+	Rage = 0;
+	MaxRage = 100;
+
 	SetIsReplicatedByDefault(true);
 }
 
@@ -99,6 +102,26 @@ float UCAttributeComponent::GetMaxHealth() const
 float UCAttributeComponent::GetHealth() const
 {
 	return Health;
+}
+
+float UCAttributeComponent::GetRage() const
+{
+	return Rage;
+}
+
+bool UCAttributeComponent::ApplyRage(AActor* InstigatorActor, float Delta)
+{
+	float OldRage = Rage;
+
+	Rage = FMath::Clamp(Rage + Delta, 0.0f, MaxRage);
+
+	float ActualDelta = Rage - OldRage;
+	if (ActualDelta != 0.0f)
+	{
+		OnRageChanged.Broadcast(InstigatorActor, this, Rage, ActualDelta);
+	}
+
+	return ActualDelta != 0;
 }
 
 void UCAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
