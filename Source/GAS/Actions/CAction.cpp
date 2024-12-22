@@ -1,5 +1,7 @@
 #include "CAction.h"
 #include "Components/CActionComponent.h"
+#include "Net/UnrealNetwork.h"
+#include "GAS.h"
 
 bool UCAction::CanStart_Implementation(AActor* Instigator)
 {
@@ -20,7 +22,8 @@ bool UCAction::CanStart_Implementation(AActor* Instigator)
 
 void UCAction::StartAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Running: %s"), *GetNameSafe(this));
+	//UE_LOG(LogTemp, Warning, TEXT("Running: %s"), *GetNameSafe(this));
+	LogOnScreen(this, FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
 
 	UCActionComponent* Comp = GetOwningComponent();
 	Comp->ActiveGameplayTags.AppendTags(GrantsTags);
@@ -30,9 +33,10 @@ void UCAction::StartAction_Implementation(AActor* Instigator)
 
 void UCAction::StopAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Stopped: %s"), *GetNameSafe(this));
+	//UE_LOG(LogTemp, Warning, TEXT("Stopped: %s"), *GetNameSafe(this));
+	LogOnScreen(this, FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
 
-	ensureAlways(bIsRunning);
+	//ensureAlways(bIsRunning);
 	UCActionComponent* Comp = GetOwningComponent();
 	Comp->ActiveGameplayTags.RemoveTags(GrantsTags);
 
@@ -41,21 +45,46 @@ void UCAction::StopAction_Implementation(AActor* Instigator)
 
 UWorld* UCAction::GetWorld() const
 {
-	UActorComponent* Comp = Cast<UActorComponent>(GetOuter());
-	if (Comp)
+	AActor* Actor = Cast<AActor>(GetOuter());
+	if (Actor)
 	{
-		return Comp->GetWorld();
+		return Actor->GetWorld();
 	}
 
 	return nullptr;
 }
 
+void UCAction::Initialize(UCActionComponent* NewActionComp)
+{
+	ActionComp = NewActionComp;
+}
+
 UCActionComponent* UCAction::GetOwningComponent() const
 {
-	return Cast<UCActionComponent>(GetOuter());
+	return ActionComp;
+}
+
+void UCAction::OnRep_IsRunning()
+{
+	if (bIsRunning)
+	{
+		StartAction(nullptr);
+	}
+	else
+	{
+		StopAction(nullptr);
+	}
 }
 
 bool UCAction::IsRunning() const
 {
 	return bIsRunning;
+}
+
+void UCAction::GetLifetimeReplicatedProps(TArray<class FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCAction, bIsRunning);
+	DOREPLIFETIME(UCAction, ActionComp);
 }

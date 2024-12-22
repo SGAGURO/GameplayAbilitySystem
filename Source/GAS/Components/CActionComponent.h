@@ -20,6 +20,7 @@ protected:
 
 public:	
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	bool ReplicateSubobjects(class UActorChannel* Channel, class FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 public:
 	//ClassRef parameter to load the 'Action' into memory.
@@ -57,6 +58,6 @@ protected:
 	TArray<TSubclassOf<UCAction>> DefaultActions;
 
 	//A list that ObjectRef of Actions created using the `AddAction` method.
-	UPROPERTY()
+	UPROPERTY(Replicated)
 	TArray<UCAction*> Actions;
 };

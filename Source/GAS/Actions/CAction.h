@@ -13,6 +13,12 @@ class GAS_API UCAction : public UObject
 	GENERATED_BODY()
 
 public:
+	virtual bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
+
+public:
 	//Simply return a bIsRunning
 	UFUNCTION(BlueprintCallable, Category = "Action")
 	bool IsRunning() const;
@@ -33,6 +39,9 @@ public:
 	//This class, which inherits from UObject, may not support GetWorld.
 	UWorld* GetWorld() const override;
 
+	//Store ActionComp as outer
+	void Initialize(UCActionComponent* NewActionComp);
+
 protected:
 	//ActionComponent that registered this action.
 	UFUNCTION(BlueprintCallable, Category = "Action")
@@ -48,7 +57,14 @@ protected:
 	FGameplayTagContainer BlockedTags;
 
 	//Flag for this Action continues or not
+	UPROPERTY(ReplicatedUsing = "OnRep_IsRunning")
 	bool bIsRunning;
+
+	UFUNCTION()
+	void OnRep_IsRunning();
+
+	UPROPERTY(Replicated)
+	UCActionComponent* ActionComp;
 	
 public:
 	//it's a key, used to identify a specific action
