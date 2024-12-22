@@ -33,3 +33,11 @@
 > https://dev.epicgames.com/documentation/en-us/unreal-engine/gameplay-framework-in-unreal-engine?application_version=5.4<br/>
 > 샘플 프로젝트<br/>
 > https://dev.epicgames.com/documentation/en-us/unreal-engine/sample-game-projects-for-unreal-engine?application_version=5.4<br/>
+
+### 네트워크 상에서 서버/클라이언트가 소유한 객체들
+- 플레이어컨트롤러는 로컬과 서버에만 존재. 다른 클라이언트에게는 없다.
+- 플레이어스테이트는 어디에나 있다. 클라이언트는 다른 클라이언트의 플레이어스테이트도 갖고 있다.
+- 플레이어스테이트는 캐릭터가 죽어도 유지되는 특징이 있다.
+- 게임모드는 서버에만 존재하며, 게임스테이트는 게임모드의 정보들을 배열로 간직하고 있다.
+- 게임모드의 데이터를 전달하려면 게임스테이트를 통해서 전달해야 한다.
+![image](https://github.com/user-attachments/assets/b1070c04-3db8-44bd-9b58-1b9b9852980e)
