@@ -5,6 +5,7 @@ UCActionComponent::UCActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
+	SetIsReplicatedByDefault(true);
 }
 
 void UCActionComponent::BeginPlay()
@@ -67,12 +68,23 @@ bool UCActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 				continue;
 			}
 
+			//if I am client, request packet to server. and client will go on next line(StartAction)
+			if (!GetOwner()->HasAuthority())
+			{
+				ServerStartAction(Instigator, ActionName);
+			}
+
 			Action->StartAction(Instigator);
 			return true;
 		}
 	}
 
 	return false;
+}
+
+void UCActionComponent::ServerStartAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StartActionByName(Instigator, ActionName);
 }
 
 bool UCActionComponent::StopActionByName(AActor* Instigator, FName ActionName)

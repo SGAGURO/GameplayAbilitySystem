@@ -38,6 +38,11 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Actions")
 	bool StopActionByName(AActor* Instigator, FName ActionName);
 
+protected:
+	UFUNCTION(Server, Reliable)
+		void ServerStartAction(AActor* Instigator, FName ActionName);
+
+public:
 	//Replaces the 'state'. it's mean currently activating states
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
 	FGameplayTagContainer ActiveGameplayTags;
