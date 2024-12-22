@@ -106,6 +106,11 @@ void UCInteractComponent::FindNearestInteractable()
 
 void UCInteractComponent::PrimaryInteract()
 {
+	ServerInteract();
+}
+
+void UCInteractComponent::ServerInteract_Implementation()
+{
 	if (FocusedActor == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "There is no interactable.");
