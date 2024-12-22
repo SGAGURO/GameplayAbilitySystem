@@ -1,4 +1,5 @@
 #include "CAttributeComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "Game/CGameMode.h"
 
 static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("SGA.DamageMultiplier"), 1.0f, TEXT("Damage Modifier for Attribute Component."), ECVF_Cheat);
@@ -7,6 +8,8 @@ UCAttributeComponent::UCAttributeComponent()
 {
 	MaxHealth = 100.f;
 	Health = MaxHealth;
+
+	SetIsReplicatedByDefault(true);
 }
 
 
@@ -87,4 +90,12 @@ float UCAttributeComponent::GetMaxHealth() const
 float UCAttributeComponent::GetHealth() const
 {
 	return Health;
+}
+
+void UCAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(UCAttributeComponent, Health);
+	DOREPLIFETIME(UCAttributeComponent, MaxHealth);
 }
