@@ -62,7 +62,7 @@ void UCInteractComponent::FindNearestInteractable()
 	{
 		if (bDebugDraw)
 		{
-			DrawDebugSphere(GetWorld(), Hit.ImpactPoint, TraceRadius, 32, LineColor, false, 2.0f);
+			DrawDebugSphere(GetWorld(), Hit.ImpactPoint, TraceRadius, 32, LineColor, false, 0.f);
 		}
 
 		AActor* HitActor = Hit.GetActor();
@@ -104,7 +104,7 @@ void UCInteractComponent::FindNearestInteractable()
 
 	if (bDebugDraw)
 	{
-		DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
+		DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 0.f, 0, 2.0f);
 	}
 }
 

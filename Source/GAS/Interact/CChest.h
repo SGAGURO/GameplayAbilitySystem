@@ -26,4 +26,11 @@ protected:
 public:
 	UPROPERTY(EditAnywhere)
 	float TargetPitch;
+
+	UPROPERTY(ReplicatedUsing = "OnRep_TopOpened", BlueprintReadOnly)
+	bool bTopOpened;
+
+protected:
+	UFUNCTION()
+	void OnRep_TopOpened();
 };
