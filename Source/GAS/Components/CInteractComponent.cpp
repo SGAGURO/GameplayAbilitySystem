@@ -110,12 +110,12 @@ void UCInteractComponent::FindNearestInteractable()
 
 void UCInteractComponent::PrimaryInteract()
 {
-	ServerInteract();
+	ServerInteract(FocusedActor);
 }
 
-void UCInteractComponent::ServerInteract_Implementation()
+void UCInteractComponent::ServerInteract_Implementation(AActor* InFocus)
 {
-	if (FocusedActor == nullptr)
+	if (InFocus == nullptr)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, "There is no interactable.");
 		return;
@@ -123,5 +123,5 @@ void UCInteractComponent::ServerInteract_Implementation()
 
 	APawn* MyPawn = Cast<APawn>(GetOwner());
 
-	ICGameplayInterface::Execute_Interact(FocusedActor, MyPawn);
+	ICGameplayInterface::Execute_Interact(InFocus, MyPawn);
 }

@@ -28,7 +28,7 @@ public:
 
 protected:
 	UFUNCTION(Server, Reliable)
-	void ServerInteract();
+	void ServerInteract(AActor* InFocus);
 
 protected:
 	UPROPERTY()
