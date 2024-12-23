@@ -62,6 +62,12 @@ void UCActionComponent::AddAction(AActor* Instigator, TSubclassOf<UCAction> Acti
 		return;
 	}
 
+	if (!GetOwner()->HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Client attempting to AddAction. [Class: %s]"), *GetNameSafe(ActionClass));
+		return;
+	}
+
 	UCAction* NewAction = NewObject<UCAction>(GetOwner(), ActionClass);
 	if (ensure(NewAction))
 	{
