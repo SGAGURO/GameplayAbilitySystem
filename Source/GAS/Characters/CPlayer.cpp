@@ -133,5 +133,7 @@ void ACPlayer::OnHealthChanged(AActor* InstigatorActor, UCAttributeComponent* Ow
 	{
 		APlayerController* PC = Cast<APlayerController>(GetController());
 		DisableInput(PC);
+
+		SetLifeSpan(5.0f);
 	}
 }
