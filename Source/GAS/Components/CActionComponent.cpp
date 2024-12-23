@@ -143,6 +143,12 @@ bool UCActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 	{
 		if (Action && Action->ActionName == ActionName)
 		{
+			//if I am client, request packet to server. and client will go on next line(StopAction)
+			if (!GetOwner()->HasAuthority())
+			{
+				ServerStopAction(Instigator, ActionName);
+			}
+
 			if (Action->IsRunning())
 			{
 				Action->StopAction(Instigator);
@@ -152,6 +158,11 @@ bool UCActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 	}
 
 	return false;
+}
+
+void UCActionComponent::ServerStopAction_Implementation(AActor* Instigator, FName ActionName)
+{
+	StopActionByName(Instigator, ActionName);
 }
 
 void UCActionComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

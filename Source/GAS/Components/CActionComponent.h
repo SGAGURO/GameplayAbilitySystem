@@ -45,7 +45,10 @@ public:
 
 protected:
 	UFUNCTION(Server, Reliable)
-		void ServerStartAction(AActor* Instigator, FName ActionName);
+	void ServerStartAction(AActor* Instigator, FName ActionName);
+
+	UFUNCTION(Server, Reliable)
+	void ServerStopAction(AActor* Instigator, FName ActionName);
 
 public:
 	//Replaces the 'state'. it's mean currently activating states
