@@ -22,6 +22,11 @@ void ACPickUpBase::Interact_Implementation(APawn* InstigatorPawn)
 {
 }
 
+FText ACPickUpBase::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return FText::GetEmpty();
+}
+
 void ACPickUpBase::Show()
 {
 	SetState(true);
