@@ -9,6 +9,7 @@
 class UEnvQuery;
 class UCurveFloat;
 class UCSaveGame;
+class UCBotDataAsset;
 
 USTRUCT(BlueprintType)
 struct FBotInfoRow : public FTableRowBase
@@ -24,7 +25,7 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AActor> BotClass;
+	UCBotDataAsset* BotData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Weight;

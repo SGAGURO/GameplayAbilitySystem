@@ -8,11 +8,14 @@
 #include "Characters/CBot.h"
 #include "Characters/CPlayer.h"
 #include "Components/CAttributeComponent.h"
+#include "Components/CActionComponent.h"
 #include "CPlayerState.h"
 #include "CSaveGame.h"
 #include "Interfaces/CGameplayInterface.h"
+#include "CBotDataAsset.h"
+#include "GAS.h"
 
-static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SGA.SpawnBots"), false, TEXT("Enable spawning of bots"), ECVF_Cheat);
+static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SGA.SpawnBots"), true, TEXT("Enable spawning of bots"), ECVF_Cheat);
 
 ACGameMode::ACGameMode()
 {
@@ -172,7 +175,20 @@ void ACGameMode::OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* Que
 			int32 RandomIndex = FMath::RandRange(0, Rows.Num() - 1);
 			FBotInfoRow* SelectedRow = Rows[RandomIndex];
 
-			GetWorld()->SpawnActor<AActor>(SelectedRow->BotClass, Locations[0], FRotator::ZeroRotator);
+			AActor* NewBot = GetWorld()->SpawnActor<AActor>(SelectedRow->BotData->BotClass, Locations[0], FRotator::ZeroRotator);
+			if (NewBot)
+			{
+				LogOnScreen(this, FString::Printf(TEXT("Spawned Enemy %s (%s)"), *GetNameSafe(NewBot), *GetNameSafe(SelectedRow->BotData)));
+
+				UCActionComponent* ActionComp = Cast<UCActionComponent>(NewBot->GetComponentByClass(UCActionComponent::StaticClass()));
+				if (ActionComp)
+				{
+					for (TSubclassOf<UCAction> ActionClass : SelectedRow->BotData->Actions)
+					{
+						ActionComp->AddAction(NewBot, ActionClass);
+					}
+				}
+			}
 
 			DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
 		}
