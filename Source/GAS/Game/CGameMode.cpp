@@ -164,9 +164,18 @@ void ACGameMode::OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* Que
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 	if (Locations.IsValidIndex(0))
 	{
-		GetWorld()->SpawnActor<AActor>(BotClass, Locations[0], FRotator::ZeroRotator);
-		
-		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+		if (BotTable)
+		{
+			TArray<FBotInfoRow*> Rows;
+			BotTable->GetAllRows("", Rows);
+
+			int32 RandomIndex = FMath::RandRange(0, Rows.Num() - 1);
+			FBotInfoRow* SelectedRow = Rows[RandomIndex];
+
+			GetWorld()->SpawnActor<AActor>(SelectedRow->BotClass, Locations[0], FRotator::ZeroRotator);
+
+			DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+		}
 	}
 }
 

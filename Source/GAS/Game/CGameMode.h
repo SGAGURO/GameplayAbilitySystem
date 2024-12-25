@@ -3,11 +3,38 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
+#include "Engine/DataTable.h"
 #include "CGameMode.generated.h"
 
 class UEnvQuery;
 class UCurveFloat;
 class UCSaveGame;
+
+USTRUCT(BlueprintType)
+struct FBotInfoRow : public FTableRowBase
+{
+	GENERATED_BODY()
+
+public:
+	FBotInfoRow()
+	{
+		Weight = 1.0f;
+		SpawnCost = 5.0f;
+		KillReward = 20.0f;
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<AActor> BotClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float Weight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float SpawnCost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float KillReward;
+};
 
 UCLASS()
 class GAS_API ACGameMode : public AGameModeBase
@@ -45,11 +72,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UEnvQuery* SpawnBotQuery;
 
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	UDataTable* BotTable;
+
 	UFUNCTION()
 	void OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
-
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	TSubclassOf<AActor> BotClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UCurveFloat* DifficultyCurve;
