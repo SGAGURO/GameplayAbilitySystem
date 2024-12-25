@@ -68,22 +68,28 @@ void ACPlayer::HealSelf(float Amount)
 
 void ACPlayer::MoveForward(float Value)
 {
-	FRotator ControlRot = GetControlRotation();
-	ControlRot.Pitch = 0.0f;
-	ControlRot.Roll = 0.0f;
+	if (ActionComp && !ActionComp->ActiveGameplayTags.HasAny(LockingMovementTag))
+	{
+		FRotator ControlRot = GetControlRotation();
+		ControlRot.Pitch = 0.0f;
+		ControlRot.Roll = 0.0f;
 
-	AddMovementInput(ControlRot.Vector(), Value);
+		AddMovementInput(ControlRot.Vector(), Value);
+	}
 }
 
 void ACPlayer::MoveRight(float Value)
 {
-	FRotator ControlRot = GetControlRotation();
-	ControlRot.Pitch = 0.0f;
-	ControlRot.Roll = 0.0f;
-	
-	FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
-	
-	AddMovementInput(RightVector, Value);
+	if (ActionComp && !ActionComp->ActiveGameplayTags.HasAny(LockingMovementTag))
+	{
+		FRotator ControlRot = GetControlRotation();
+		ControlRot.Pitch = 0.0f;
+		ControlRot.Roll = 0.0f;
+
+		FVector RightVector = FRotationMatrix(ControlRot).GetScaledAxis(EAxis::Y);
+
+		AddMovementInput(RightVector, Value);
+	}
 }
 
 void ACPlayer::SprintStart()

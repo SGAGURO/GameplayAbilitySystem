@@ -16,8 +16,12 @@ void UCAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
+	//Get tag as string, no good idea
+	static FGameplayTag StunnedTag = FGameplayTag::RequestGameplayTag("Status.Stunned");
+
 	if (ActionComp)
 	{
 		bIsSprinting = ActionComp->ActiveGameplayTags.HasTag(SprintingTag);
+		bIsStunned = ActionComp->ActiveGameplayTags.HasTag(StunnedTag);
 	}
 }

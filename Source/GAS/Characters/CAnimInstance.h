@@ -25,4 +25,7 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, EditAnywhere, Category = "Animation")
 	FGameplayTag SprintingTag;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Animation")
+	bool bIsStunned;
 };
