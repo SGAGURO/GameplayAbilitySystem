@@ -52,13 +52,13 @@ void ACGameMode::StartPlay()
 
 void ACGameMode::HandleStartingNewPlayer_Implementation(APlayerController* NewPlayer)
 {
-	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
-
 	ACPlayerState* PS = NewPlayer->GetPlayerState<ACPlayerState>();
-	if (PS)
+	if (ensure(PS))
 	{
 		PS->LoadPlayerState(CurrentSaveGame);
 	}
+
+	Super::HandleStartingNewPlayer_Implementation(NewPlayer);
 }
 
 void ACGameMode::KillEmAll()
@@ -89,7 +89,7 @@ void ACGameMode::OnActorKilled(AActor* VictimActor, AActor* Killer)
 	}
 
 	APawn* KillerPawn = Cast<APawn>(Killer);
-	if (KillerPawn)
+	if (KillerPawn && KillerPawn != VictimActor)
 	{
 		ACPlayerState* PS = KillerPawn->GetPlayerState<ACPlayerState>();
 		if (PS)

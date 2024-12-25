@@ -31,6 +31,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastHealthChanged(AActor* InstigatorActor, float NewHealth, float Delta);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastRageChanged(AActor* InstigatorActor, float NewRage, float Delta);
+
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool IsAlive() const;
 

@@ -6,6 +6,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnCreditsChanged, ACPlayerState*, PlayerState, int32, NewCredits, int32, Delta);
 
+class UCSaveGame;
+
 UCLASS()
 class GAS_API ACPlayerState : public APlayerState
 {
@@ -32,7 +34,10 @@ public:
 	FOnCreditsChanged OnCreditsChanged;
 
 protected:
-	UPROPERTY(EditDefaultsOnly, Category = "Credits")
+	UPROPERTY(EditDefaultsOnly, ReplicatedUsing = "OnRep_Credits")
 	int32 Credits;
+
+	UFUNCTION()
+	void OnRep_Credits(int32 OldCredits);
 
 };

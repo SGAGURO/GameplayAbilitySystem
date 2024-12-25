@@ -31,6 +31,7 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	//FString DebugMsg = GetNameSafe(GetOwner()) + " : " + ActiveGameplayTags.ToStringSimple();
 	//GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
 
+#ifdef DEBUG_ACTION
 	for (UCAction* Action : Actions)
 	{
 		FColor TextColor = Action->IsRunning() ? FColor::Blue : FColor::White;
@@ -38,6 +39,7 @@ void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 
 		LogOnScreen(this, ActionMsg, TextColor, 0.0f);
 	}
+#endif
 }
 
 bool UCActionComponent::ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags)

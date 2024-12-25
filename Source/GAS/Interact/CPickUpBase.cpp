@@ -1,5 +1,5 @@
 #include "CPickUpBase.h"
-
+#include "Net/UnrealNetwork.h"
 #include "Components/SphereComponent.h"
 
 ACPickUpBase::ACPickUpBase()
@@ -13,6 +13,7 @@ ACPickUpBase::ACPickUpBase()
 	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	RespawnTime = 10.0f;
+	bIsActive = true;
 
 	SetReplicates(true);
 }
@@ -35,6 +36,19 @@ void ACPickUpBase::HideAndCooldown()
 
 void ACPickUpBase::SetState(bool bActive)
 {
-	SetActorEnableCollision(bActive);
-	RootComponent->SetVisibility(bActive, true);
+	bIsActive = bActive;	//Server
+	OnRep_IsActive();		//Other Clients
+}
+
+void ACPickUpBase::OnRep_IsActive()
+{
+	SetActorEnableCollision(bIsActive);
+	RootComponent->SetVisibility(bIsActive, true);
+}
+
+void ACPickUpBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ACPickUpBase, bIsActive);
 }

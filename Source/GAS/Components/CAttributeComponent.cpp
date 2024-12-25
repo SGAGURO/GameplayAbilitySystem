@@ -88,6 +88,11 @@ void UCAttributeComponent::MulticastHealthChanged_Implementation(AActor* Instiga
 	OnHealthChanged.Broadcast(InstigatorActor, this, NewHealth, Delta);
 }
 
+void UCAttributeComponent::MulticastRageChanged_Implementation(AActor* InstigatorActor, float NewRage, float Delta)
+{
+	OnRageChanged.Broadcast(InstigatorActor, this, NewRage, Delta);
+}
+
 bool UCAttributeComponent::IsAlive() const
 {
 	return Health > 0.0f;
@@ -134,4 +139,7 @@ void UCAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>&
 
 	DOREPLIFETIME(UCAttributeComponent, Health);
 	DOREPLIFETIME(UCAttributeComponent, MaxHealth);
+
+	DOREPLIFETIME(UCAttributeComponent, Rage);
+	DOREPLIFETIME(UCAttributeComponent, MaxRage);
 }
