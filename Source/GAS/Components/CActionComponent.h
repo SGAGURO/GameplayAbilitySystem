@@ -7,6 +7,8 @@
 
 class UCAction;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnActionStateChanged, UCActionComponent*, OwningComp, UCAction*, Action);
+
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class GAS_API UCActionComponent : public UActorComponent
 {
@@ -55,12 +57,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Tags")
 	FGameplayTagContainer ActiveGameplayTags;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChanged OnActionStarted;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnActionStateChanged OnActionStopped;
+
 protected:
 	//A list of actions that are owned by default.
 	UPROPERTY(EditAnywhere, Category = "Actions")
 	TArray<TSubclassOf<UCAction>> DefaultActions;
 
 	//A list that ObjectRef of Actions created using the `AddAction` method.
-	UPROPERTY(Replicated)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	TArray<UCAction*> Actions;
 };
