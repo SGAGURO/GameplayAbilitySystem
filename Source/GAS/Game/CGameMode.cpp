@@ -9,6 +9,7 @@
 #include "Components/CAttributeComponent.h"
 #include "CPlayerState.h"
 #include "CSaveGame.h"
+#include "Interfaces/CGameplayInterface.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("SGA.SpawnBots"), false, TEXT("Enable spawning of bots"), ECVF_Cheat);
 
@@ -233,6 +234,7 @@ void ACGameMode::OnSpawnPickUpQueryCompleted(UEnvQueryInstanceBlueprintWrapper* 
 
 void ACGameMode::WriteSaveGame()
 {
+	//PlayerState - Credit
 	for (int32 i = 0; i < GameState->PlayerArray.Num(); i++)
 	{
 		ACPlayerState* PS = Cast<ACPlayerState>(GameState->PlayerArray[i]);
@@ -241,6 +243,23 @@ void ACGameMode::WriteSaveGame()
 			PS->SavePlayerState(CurrentSaveGame);
 			break;
 		}
+	}
+
+	//Actor - InteractableActor
+	CurrentSaveGame->SavedActors.Empty();
+	for (FActorIterator It(GetWorld()); It; ++It)
+	{
+		AActor* Actor = *It;
+		if (!Actor->Implements<UCGameplayInterface>())
+		{
+			continue;
+		}
+
+		FActorSaveData ActorData;
+		ActorData.ActorName = Actor->GetName();
+		ActorData.Transform = Actor->GetActorTransform();
+
+		CurrentSaveGame->SavedActors.Add(ActorData);
 	}
 
 	UGameplayStatics::SaveGameToSlot(CurrentSaveGame, SlotName, 0);
@@ -258,6 +277,24 @@ void ACGameMode::LoadSaveGame()
 		}
 
 		UE_LOG(LogTemp, Log, TEXT("Loaded SaveGame Data."));
+
+		for (FActorIterator It(GetWorld()); It; ++It)
+		{
+			AActor* Actor = *It;
+			if (!Actor->Implements<UCGameplayInterface>())
+			{
+				continue;
+			}
+
+			for (FActorSaveData ActorData : CurrentSaveGame->SavedActors)
+			{
+				if (ActorData.ActorName == Actor->GetName())
+				{
+					Actor->SetActorTransform(ActorData.Transform);
+					break;
+				}
+			}
+		}
 	}
 	else
 	{

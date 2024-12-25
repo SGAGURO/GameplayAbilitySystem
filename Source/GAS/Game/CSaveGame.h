@@ -4,6 +4,23 @@
 #include "GameFramework/SaveGame.h"
 #include "CSaveGame.generated.h"
 
+USTRUCT()
+struct FActorSaveData
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	FString ActorName;
+
+	UPROPERTY()
+	FTransform Transform;
+
+	//not used yet. it needs to when UPROPERTY(SaveGame) <-> FArchive
+	UPROPERTY()
+	TArray<uint8> ByteData; 
+};
+
 UCLASS()
 class GAS_API UCSaveGame : public USaveGame
 {
@@ -12,4 +29,7 @@ class GAS_API UCSaveGame : public USaveGame
 public:
 	UPROPERTY()
 	int32 Credits;
+
+	UPROPERTY()
+	TArray<FActorSaveData> SavedActors;
 };
