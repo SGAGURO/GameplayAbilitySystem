@@ -15,6 +15,7 @@ public:
 
 public:
 	void Interact_Implementation(APawn* InstigatorPawn) override;
+	void OnActorLoaded_Implementation() override;
 
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -27,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere)
 	float TargetPitch;
 
-	UPROPERTY(ReplicatedUsing = "OnRep_TopOpened", BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, SaveGame, ReplicatedUsing = "OnRep_TopOpened")
 	bool bTopOpened;
 
 protected:

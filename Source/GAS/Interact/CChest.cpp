@@ -23,6 +23,11 @@ void ACChest::Interact_Implementation(APawn* InstigatorPawn)
 	OnRep_TopOpened();
 }
 
+void ACChest::OnActorLoaded_Implementation()
+{
+	OnRep_TopOpened();
+}
+
 void ACChest::OnRep_TopOpened()
 {
 	float CurrPitch = bTopOpened ? TargetPitch : 0.0f;
