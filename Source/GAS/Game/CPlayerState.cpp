@@ -1,4 +1,5 @@
 #include "CPlayerState.h"
+#include "CSaveGame.h"
 
 int32 ACPlayerState::GetCredits() const
 {
@@ -35,4 +36,20 @@ bool ACPlayerState::RemoveCredits(int32 Delta)
 	OnCreditsChanged.Broadcast(this, Credits, -Delta);
 
 	return true;
+}
+
+void ACPlayerState::SavePlayerState_Implementation(UCSaveGame* SaveObject)
+{
+	if (SaveObject)
+	{
+		SaveObject->Credits = Credits;
+	}
+}
+
+void ACPlayerState::LoadPlayerState_Implementation(UCSaveGame* SaveObject)
+{
+	if (SaveObject)
+	{
+		Credits = SaveObject->Credits;
+	}
 }
