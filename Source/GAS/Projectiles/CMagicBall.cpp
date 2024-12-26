@@ -10,6 +10,7 @@ ACMagicBall::ACMagicBall()
 {
 	SphereComp->SetSphereRadius(20.0f);
 	DamageAmount = 20.0f;
+	InitialLifeSpan = 10.0f;
 }
 
 void ACMagicBall::BeginPlay()

@@ -4,6 +4,8 @@
 #include "Engine/ActorChannel.h"
 #include "GAS.h"
 
+DECLARE_CYCLE_STAT(TEXT("StartActionByName"), STAT_StartActionByName, STATGROUP_SGA);
+
 UCActionComponent::UCActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -109,6 +111,8 @@ UCAction* UCActionComponent::GetAction(TSubclassOf<UCAction> ActionClass) const
 
 bool UCActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StartActionByName);
+
 	for (UCAction* Action : Actions)
 	{
 		if (Action && Action->ActionName == ActionName)
@@ -125,6 +129,8 @@ bool UCActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 			{
 				ServerStartAction(Instigator, ActionName);
 			}
+
+			TRACE_BOOKMARK(TEXT("StartAction::%s"), *GetNameSafe(Action));
 
 			Action->StartAction(Instigator);
 			return true;
