@@ -26,6 +26,21 @@ void UCActionComponent::BeginPlay()
 	}
 }
 
+void UCActionComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	//I don't want to changed iterator by RemoveAction function.
+	TArray<UCAction*> ActionsCopy = Actions;
+	for (UCAction* Action : ActionsCopy)
+	{
+		if (Action && Action->IsRunning())
+		{
+			Action->StopAction(GetOwner());
+		}
+	}
+
+	Super::EndPlay(EndPlayReason);
+}
+
 void UCActionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
