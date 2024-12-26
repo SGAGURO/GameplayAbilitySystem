@@ -21,4 +21,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
 	UTexture2D* Icon;
 	
+	FPrimaryAssetId GetPrimaryAssetId() const override
+	{
+		return FPrimaryAssetId("CBot", GetFName());
+	}
 };

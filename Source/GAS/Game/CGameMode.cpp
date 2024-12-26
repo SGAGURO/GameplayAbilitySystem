@@ -5,6 +5,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/GameStateBase.h"
 #include "Serialization/ObjectAndNameAsStringProxyArchive.h"
+#include "Engine/AssetManager.h"
 #include "Characters/CBot.h"
 #include "Characters/CPlayer.h"
 #include "Components/CAttributeComponent.h"
@@ -175,22 +176,48 @@ void ACGameMode::OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* Que
 			int32 RandomIndex = FMath::RandRange(0, Rows.Num() - 1);
 			FBotInfoRow* SelectedRow = Rows[RandomIndex];
 
-			AActor* NewBot = GetWorld()->SpawnActor<AActor>(SelectedRow->BotData->BotClass, Locations[0], FRotator::ZeroRotator);
+			UAssetManager* Manager = UAssetManager::GetIfValid();
+			if (Manager)
+			{
+				LogOnScreen(this, "Loading bot...", FColor::Yellow);
+
+				//It's related to the UPROPERTY(AssetBundle). ex)AssetBundle = 'Weapon'.
+				TArray<FName> Bundles; 
+
+				//Function to be bound will be has two parameters.(BotID, Location)
+				FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this, &ACGameMode::OnBotLoaded, SelectedRow->BotID, Locations[0]);
+				Manager->LoadPrimaryAsset(SelectedRow->BotID, Bundles, Delegate);
+			}
+		}
+	}
+}
+
+void ACGameMode::OnBotLoaded(FPrimaryAssetId LoadedId, FVector SpawnLocation)
+{
+	LogOnScreen(this, LoadedId.PrimaryAssetName.ToString() + " is loaded", FColor::Blue);
+
+	UAssetManager* Manager = UAssetManager::GetIfValid();
+	if (Manager)
+	{
+		UCBotDataAsset* BotDataAsset = Cast<UCBotDataAsset>(Manager->GetPrimaryAssetObject(LoadedId));
+		if (BotDataAsset)
+		{
+			AActor* NewBot = GetWorld()->SpawnActor<AActor>(BotDataAsset->BotClass, SpawnLocation, FRotator::ZeroRotator);
 			if (NewBot)
 			{
-				LogOnScreen(this, FString::Printf(TEXT("Spawned Enemy %s (%s)"), *GetNameSafe(NewBot), *GetNameSafe(SelectedRow->BotData)));
+				LogOnScreen(this, FString::Printf(TEXT("Spawned Enemy %s (%s)"), *GetNameSafe(NewBot), *GetNameSafe(BotDataAsset)));
 
 				UCActionComponent* ActionComp = Cast<UCActionComponent>(NewBot->GetComponentByClass(UCActionComponent::StaticClass()));
 				if (ActionComp)
 				{
-					for (TSubclassOf<UCAction> ActionClass : SelectedRow->BotData->Actions)
+					for (TSubclassOf<UCAction> ActionClass : BotDataAsset->Actions)
 					{
 						ActionComp->AddAction(NewBot, ActionClass);
 					}
 				}
 			}
 
-			DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 20, FColor::Blue, false, 60.0f);
+			DrawDebugSphere(GetWorld(), SpawnLocation, 50.0f, 20, FColor::Blue, false, 60.0f);
 		}
 	}
 }

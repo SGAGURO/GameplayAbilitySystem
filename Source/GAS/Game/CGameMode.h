@@ -25,7 +25,7 @@ public:
 	}
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UCBotDataAsset* BotData;
+	FPrimaryAssetId BotID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Weight;
@@ -78,6 +78,8 @@ protected:
 
 	UFUNCTION()
 	void OnSpawnBotQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	void OnBotLoaded(FPrimaryAssetId LoadedId, FVector SpawnLocation);
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UCurveFloat* DifficultyCurve;
