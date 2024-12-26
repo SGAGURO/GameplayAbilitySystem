@@ -74,7 +74,7 @@ protected:
 	FActionRepData RepData;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
-	UTexture2D* Icon;
+	TSoftObjectPtr<UTexture2D> Icon;
 
 	UPROPERTY(Replicated)
 	float TimeStarted;
